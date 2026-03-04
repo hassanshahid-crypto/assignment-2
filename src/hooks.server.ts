@@ -6,6 +6,12 @@ const authorizationHandle: Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
 	const path = event.url.pathname;
 
+	// Skip authorization for Auth.js internal routes (callbacks, signin, signout, etc.)
+	// These are handled by authHandle and should not be intercepted
+	if (path.startsWith('/auth/callback') || path.startsWith('/auth/signin') || path.startsWith('/auth/signout')) {
+		return resolve(event);
+	}
+
 	// Protected routes: /dashboard/*
 	if (path.startsWith('/dashboard')) {
 		if (!session?.user) {

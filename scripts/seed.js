@@ -15,6 +15,10 @@ async function seed() {
 	const client = await pool.connect();
 
 	try {
+		// Enable pgvector extension
+		await client.query('CREATE EXTENSION IF NOT EXISTS vector');
+		console.log('pgvector extension enabled.');
+
 		const hashedPassword = await bcrypt.hash('admin123', 12);
 
 		// Check if admin already exists
